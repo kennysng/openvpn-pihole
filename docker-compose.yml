@@ -27,7 +27,7 @@ services:
       vpn-net:
         ipv4_address: 172.20.0.2
     environment:
-      TZ: "Europe/Berlin"
+      TZ: "Asia/Hong_Kong"
       FTLCONF_webserver_api_password: "password"
       FTLCONF_dns_listeningMode: "all"
       FTLCONF_dns_upstreams: "1.1.1.1;8.8.8.8" # Cloudflare and Google
