@@ -2,7 +2,11 @@ services:
   openvpn:
     container_name: openvpn
     build: ./openvpn-docker
-    network_mode: host
+    ports:
+      - "1194:1194/udp"
+    networks:
+      vpn-net:
+        ipv4_address: 172.20.0.3
     volumes:
       - ./openvpn/pki:/etc/openvpn/pki
       - ./openvpn/clients:/etc/openvpn/clients
@@ -19,12 +23,18 @@ services:
     image: pihole/pihole:latest
     depends_on:
       - "openvpn"
-    network_mode: host
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"
+    networks:
+      vpn-net:
+        ipv4_address: 172.20.0.2
     environment:
       TZ: "Asia/Hong_Kong"
       FTLCONF_webserver_api_password: "password"
       FTLCONF_dns_listeningMode: "all"
-      FTLCONF_dns_upstreams: "208.67.222.222;208.67.220.220" # OpenDNS
+      FTLCONF_dns_upstreams: "1.1.1.1;8.8.8.8" # Cloudflare and Google
     volumes:
       - './pihole/pihole:/etc/pihole'
     cap_add:
@@ -38,3 +48,12 @@ services:
           cpus: '0.05'
           memory: 10M
     restart: unless-stopped
+
+networks:
+  vpn-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+
