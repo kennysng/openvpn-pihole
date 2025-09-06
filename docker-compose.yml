@@ -39,14 +39,6 @@ services:
       - './pihole/pihole:/etc/pihole'
     cap_add:
       - NET_ADMIN
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 100M
-        reservations:
-          cpus: '0.05'
-          memory: 10M
     restart: unless-stopped
 
 networks:
